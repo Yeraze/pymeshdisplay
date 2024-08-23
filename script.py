@@ -23,8 +23,8 @@ def parse_log_file(log_file_path):
     current_node = {}
 
     with open(log_file_path, 'r') as file:
-        for line in file:
-            line = line.strip()
+        for rawline in file:
+            line = rawline.strip()
 
             if line.startswith('Nodes in mesh:'):
                 inside_node_section = True
@@ -34,7 +34,7 @@ def parse_log_file(log_file_path):
                 if line.endswith('{'):
                     continue
 
-                if line.endswith('}'):
+                if rawline.startswith('  },'):
                     if current_node:  # Only add if the current_node has been populated
                         nodes.append(current_node)
                     current_node = {}
@@ -76,6 +76,8 @@ def generate_html(nodes, output_path):
 
     # Add markers to the map for each valid node
     for node in valid_nodes:
+        if 'latitudeI' not in node:
+            continue
         age = 99999999
         color = "gray"
         if 'lastHeard_raw' in node:
@@ -154,7 +156,7 @@ def generate_html(nodes, output_path):
             }}
             .tablebg {{
                 background-color: #fefefe;
-                margin: 15% auto; /* 15% from the top and centered */
+                margin: 2% auto; /* 15% from the top and centered */
                 padding: 20px;
                 border: 1px solid #888;
             }}
