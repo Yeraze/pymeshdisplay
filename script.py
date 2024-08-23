@@ -123,6 +123,7 @@ def generate_html(nodes, output_path):
                 <td>{last_heard_formatted}</td>
             </tr>"""
 
+    stamp = datetime.now().strftime('%c')
     html_content = f"""
     <html>
     <head>
@@ -135,6 +136,9 @@ def generate_html(nodes, output_path):
                 padding: 5px;
                 text-align: left;
                 font-size: -1;
+            }}
+            h3 {{
+                font-size: 75%;
             }}
             .nobr {{
                 white-space: nowrap !important;
@@ -162,6 +166,7 @@ def generate_html(nodes, output_path):
         <div class="overmap">
             <div class="tablebg">
             <h2>Node Details</h2>
+            <h3>Last Updated {stamp}</h3>
             <table>
                 <thead>
                     <tr>
