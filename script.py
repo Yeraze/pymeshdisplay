@@ -71,13 +71,18 @@ def generate_html(nodes, output_path):
 
     m = folium.Map(location=map_center, zoom_start=12)
 
+    m.add_css_link(
+    "randall_css",
+    "reh.css")
+
     # Add markers to the map for each valid node
     for node in valid_nodes:
-        popup_content = f"Last Seen: {node.get('lastHeard', 'Unknown')}<br>"
-        popup_content += f"MAC: {node.get('macaddr', 'Unknown')}<br>"
-        popup_content += f"Model: {node.get('hwModel', 'Unknown')}<br>"
-        popup_content += f"Uptime: {format_uptime(node.get('uptime', 0))}"
-
+        popup_content = f"<span class='nobr'><b>{node.get('longName', 'Unknown')}-{node.get('shortName', 'Unknown')}</b></span><br>"
+        popup_content += f"<span class='nobr'>Last Seen: {node.get('lastHeard', 'Unknown')}</span><br>"
+        popup_content += f"<span class='nobr'>MAC: {node.get('macaddr', 'Unknown')}</span><br>"
+        popup_content += f"<span class='nobr'>Model: {node.get('hwModel', 'Unknown')}</span><br>"
+        popup_content += f"<span class='nobr'>Uptime: {format_uptime(node.get('uptime', 0))}</span>"
+        
         folium.Marker(
             location=(node['latitudeI'], node['longitudeI']),
             popup=popup_content,
@@ -115,6 +120,9 @@ def generate_html(nodes, output_path):
             th, td {{
                 padding: 10px;
                 text-align: left;
+            }}
+            .nobr {{
+                white-space: nowrap !important;
             }}
         </style>
     </head>
