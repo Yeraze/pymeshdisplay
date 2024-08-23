@@ -88,7 +88,12 @@ def generate_html(nodes, output_path):
                 color = "orange"
             else:
                 color = "lightgreen"
-            
+        icon = "wifi"
+        if 'role' in node:
+            if node['role'] == 'ROUTER':
+                icon = "signal"
+            if node['role'] == 'ROUTER_CLIENT':
+                icon = "signal"
 
         popup_content = f"<span class='nobr'><b>{node.get('longName', 'Unknown')}-{node.get('shortName', 'Unknown')}</b></span><br>"
         popup_content += f"<span class='nobr'>Last Seen: {node.get('lastHeard', 'Unknown')}</span><br>"
@@ -99,8 +104,8 @@ def generate_html(nodes, output_path):
         folium.Marker(
             location=(node['latitudeI'], node['longitudeI']),
             popup=popup_content,
-            icon=folium.Icon(color=color),
-            tooltip=f"{node.get('longName', 'Unknown')}-{node.get('shortName', 'Unknown')}"
+            icon=folium.Icon(color=color, icon=icon),
+            tooltip=f"[{node.get('shortName', 'Unknown')}] {node.get('longName', 'Unknown')}"
         ).add_to(m)
 
     # Save the map as HTML
