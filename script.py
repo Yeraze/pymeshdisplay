@@ -48,6 +48,7 @@ def parse_log_file(log_file_path):
                     elif key in ['num', 'altitude', 'snr', 'uptime']:
                         value = float(value)
                     elif key == 'lastHeard':
+                        current_node['lastHeard_raw'] = int(value)
                         value = convert_time(int(value))
 
                     current_node[key] = value
@@ -71,9 +72,7 @@ def generate_html(nodes, output_path):
 
     m = folium.Map(location=map_center, zoom_start=12)
 
-    m.add_css_link(
-    "randall_css",
-    "reh.css")
+    m.add_css_link("randall_css", "reh.css")
 
     # Add markers to the map for each valid node
     for node in valid_nodes:
@@ -95,55 +94,77 @@ def generate_html(nodes, output_path):
     # Generate the HTML table with node details
     table_rows = ""
     for node in nodes:
-        last_heard_formatted = node['lastHeard'] if 'lastHeard' in node else 'Unknown'
-        table_rows += f"""
-        <tr>
-            <td>{node.get('longName', 'Unknown')}</td>
-            <td>{node.get('shortName', 'Unknown')}</td>
-            <td>{node.get('num', 'Unknown')}</td>
-            <td>{node.get('snr', 'N/A')}</td>
-            <td>{last_heard_formatted}</td>
-        </tr>"""
+        if 'lastHeard' in node:
+            age = datetime.now() - datetime.fromtimestamp(node['lastHeard_raw']) 
+            if(age.days > 0):
+                continue
+            if(age.seconds > 3600):
+                continue
+            last_heard_formatted = node['lastHeard']
+            table_rows += f"""
+            <tr>
+                <td>{node.get('longName', 'Unknown')}</td>
+                <td>{node.get('shortName', 'Unknown')}</td>
+                <td>{node.get('num', 'Unknown')}</td>
+                <td>{node.get('snr', 'N/A')}</td>
+                <td>{last_heard_formatted}</td>
+            </tr>"""
 
     html_content = f"""
     <html>
     <head>
         <title>Mesh Network Nodes</title>
         <style>
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-            }}
             table, th, td {{
                 border: 1px solid black;
             }}
             th, td {{
-                padding: 10px;
+                padding: 5px;
                 text-align: left;
+                font-size: -1;
             }}
             .nobr {{
                 white-space: nowrap !important;
+            }}
+            .overmap {{
+                position: fixed;
+                overflow: auto;
+                top: 50px;
+                left: 50px;
+                width: 30em;
+                height: 40em;
+                z-index: 99;
+            }}
+            .tablebg {{
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
             }}
         </style>
     </head>
     <body>
         <h1>Mesh Network Nodes</h1>
         <div>{map_html}</div>
-        <h2>Node Details</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Long Name</th>
-                    <th>Short Name</th>
-                    <th>ID</th>
-                    <th>SNR</th>
-                    <th>Last Seen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {table_rows}
-            </tbody>
-        </table>
+        <div class="overmap">
+            <div class="tablebg">
+            <h2>Node Details</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Long Name</th>
+                        <th>Short Name</th>
+                        <th>ID</th>
+                        <th>SNR</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+            </div>
+        </div>
     </body>
     </html>
     """
