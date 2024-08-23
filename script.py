@@ -76,6 +76,18 @@ def generate_html(nodes, output_path):
 
     # Add markers to the map for each valid node
     for node in valid_nodes:
+        age = 99999999
+        color = "gray"
+        if 'lastHeard_raw' in node:
+            age = datetime.now() - datetime.fromtimestamp(node['lastHeard_raw']) 
+            if (age.days > 1):
+                color = "gray"
+            elif (age.seconds > 3600):
+                color = "orange"
+            else:
+                color = "lightgreen"
+            
+
         popup_content = f"<span class='nobr'><b>{node.get('longName', 'Unknown')}-{node.get('shortName', 'Unknown')}</b></span><br>"
         popup_content += f"<span class='nobr'>Last Seen: {node.get('lastHeard', 'Unknown')}</span><br>"
         popup_content += f"<span class='nobr'>MAC: {node.get('macaddr', 'Unknown')}</span><br>"
@@ -85,6 +97,7 @@ def generate_html(nodes, output_path):
         folium.Marker(
             location=(node['latitudeI'], node['longitudeI']),
             popup=popup_content,
+            icon=folium.Icon(color=color),
             tooltip=f"{node.get('longName', 'Unknown')}-{node.get('shortName', 'Unknown')}"
         ).add_to(m)
 
