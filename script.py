@@ -1,6 +1,13 @@
 import json
 from datetime import datetime
+import pytz
 import folium
+import re
+
+def replace_unicode(s):
+    return s.encode('utf-8', 'replace').decode('unicode_escape', 'replace')
+
+
 
 # Function to convert timestamp to human-readable format
 def convert_time(timestamp):
@@ -22,7 +29,7 @@ def parse_log_file(log_file_path):
     inside_node_section = False
     current_node = {}
 
-    with open(log_file_path, 'r') as file:
+    with open(log_file_path, 'r',  encoding='utf-8', errors='replace') as file:
         for rawline in file:
             line = rawline.strip()
 
@@ -41,7 +48,8 @@ def parse_log_file(log_file_path):
                 elif ':' in line:
                     key, value = line.split(':', 1)
                     key = key.strip().strip('"')
-                    value = value.strip().strip(',').strip('"')
+                    value = replace_unicode(value.strip().strip(',').strip('"'))
+
 
                     if key in ['latitudeI', 'longitudeI']:
                         value = convert_coordinates(int(value))
@@ -81,7 +89,7 @@ def generate_html(nodes, output_path):
         age = 99999999
         color = "gray"
         if 'lastHeard_raw' in node:
-            age = datetime.now() - datetime.fromtimestamp(node['lastHeard_raw']) 
+            age = datetime.now() - datetime.fromtimestamp(node['lastHeard_raw'])
             if (age.days > 1):
                 color = "gray"
             elif (age.seconds > 3600):
@@ -195,7 +203,7 @@ def generate_html(nodes, output_path):
     """
 
     # Write the HTML content to the output file
-    with open(output_path, 'w') as file:
+    with open(output_path, 'w',  encoding='utf-8', errors='replace') as file:
         file.write(html_content)
 
 # Specify the log file path and output HTML file path
