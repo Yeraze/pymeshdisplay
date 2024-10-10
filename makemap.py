@@ -233,12 +233,13 @@ def generate_html(nodes, output_path):
         file.write(html_content)
 
 
-# Specify the log file path and output HTML file path
-log_file_path = "meshtastic.log"
-output_path = "meshtastic_nodes.html"
+if __name__ == "__main__":
+    # Specify the log file path and output HTML file path
+    log_file_path = "meshtastic.log"
+    output_path = "meshtastic_nodes.html"
 
-# Run the functions to parse the log and generate the HTML
-nodes = parse_log_file(log_file_path)
-generate_html(nodes, output_path)
+    # Run the functions to parse the log and generate the HTML
+    nodes = parse_log_file(log_file_path)
+    generate_html(nodes, output_path)
 
-print("HTML file generated at:", output_path)
+    print("HTML file generated at:", output_path)
