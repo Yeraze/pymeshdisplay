@@ -10,11 +10,9 @@ def onReceive(packet, interface):
     print("Packet received ->")
     pprint.pprint(packet)
     if "decoded" in packet:
-        message_bytes = packet["decoded"]["payload"]
-        message_string = message_bytes.decode("utf-8")
         fptr = open("messages.txt", "a")
-        fptr.write(message_string)
-        fptr.write("\n")
+        pprint.pprint(packet, fptr)
+        fptr.write("------\n")
         fptr.close()
 
 
@@ -63,7 +61,7 @@ if __name__ == "__main__":
                     sNode["longName"] = node["user"]["longName"]
                     sNode["shortName"] = node["user"]["shortName"]
                     sNode["hwModel"] = node["user"]["hwModel"]
-                    sNode["hops"] = node.get("hopsAway", 99)
+                    sNode["hops"] = node.get("hopsAway", "0")
                     sNode["macaddr"] = node["user"].get("macaddr", "UNKNOWN")
                     reducedNodes.append(sNode)
                 print("Generating map...")
