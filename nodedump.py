@@ -38,7 +38,6 @@ if __name__ == "__main__":
     for i in range(0, 10):
         print("Waiting for response.. %i" % i)
         time.sleep(5)
-        cycleCount += 1
         if cycleCount % 10 == 0:
             # Dump nodes and generate map
             reducedNodes = []
@@ -61,9 +60,10 @@ if __name__ == "__main__":
                     sNode["longName"] = node["user"]["longName"]
                     sNode["shortName"] = node["user"]["shortName"]
                     sNode["hwModel"] = node["user"]["hwModel"]
-                    sNode["macaddr"] = node["user"]["macaddr"]
+                    sNode["macaddr"] = node["user"].get("macaddr", "UNKNOWN")
                     reducedNodes.append(sNode)
                 print("Generating map...")
                 makemap.generate_html(reducedNodes, "map.html")
+        cycleCount += 1
 
     iface.close()
