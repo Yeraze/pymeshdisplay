@@ -158,9 +158,9 @@ def generate_html(nodes, output_path):
             <tr>
                 <td>{node.get('longName', 'Unknown')}</td>
                 <td>{node.get('shortName', 'Unknown')}</td>
-                <td>{node.get('num', 'Unknown')}</td>
                 <td>{node.get('snr', 'N/A')}</td>
                 <td>{last_heard_formatted}</td>
+                <td>{node.get('hops', 'N/A')}</td>
             </tr>"""
 
     stamp = datetime.now().strftime("%c")
@@ -213,9 +213,9 @@ def generate_html(nodes, output_path):
                     <tr>
                         <th>Long Name</th>
                         <th>Short Name</th>
-                        <th>ID</th>
                         <th>SNR</th>
                         <th>Last Seen</th>
+                        <th>Hops</th>
                     </tr>
                 </thead>
                 <tbody>

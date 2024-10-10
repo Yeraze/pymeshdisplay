@@ -3,9 +3,12 @@ import meshtastic.ble_interface
 import makemap
 from pubsub import pub
 import time
+import pprint
 
 
 def onReceive(packet, interface):
+    print("Packet received ->")
+    pprint.pprint(packet)
     if "decoded" in packet:
         message_bytes = packet["decoded"]["payload"]
         message_string = message_bytes.decode("utf-8")
@@ -35,8 +38,8 @@ if __name__ == "__main__":
 
     print("Entering main loop")
     cycleCount = 0
-    for i in range(0, 10):
-        print("Waiting for response.. %i" % i)
+    while True:
+        print("Waiting for response.. %i" % cycleCount)
         time.sleep(5)
         if cycleCount % 10 == 0:
             # Dump nodes and generate map
@@ -60,10 +63,11 @@ if __name__ == "__main__":
                     sNode["longName"] = node["user"]["longName"]
                     sNode["shortName"] = node["user"]["shortName"]
                     sNode["hwModel"] = node["user"]["hwModel"]
+                    sNode["hops"] = node.get("hopsAway", 99)
                     sNode["macaddr"] = node["user"].get("macaddr", "UNKNOWN")
                     reducedNodes.append(sNode)
                 print("Generating map...")
-                makemap.generate_html(reducedNodes, "map.html")
+                makemap.generate_html(reducedNodes, "/var/www/html/reh.html")
         cycleCount += 1
 
     iface.close()
