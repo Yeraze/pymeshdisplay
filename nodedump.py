@@ -61,7 +61,7 @@ if __name__ == "__main__":
                     sNode["longName"] = node["user"]["longName"]
                     sNode["shortName"] = node["user"]["shortName"]
                     sNode["hwModel"] = node["user"]["hwModel"]
-                    sNode["hops"] = node.get("hopsAway", "0")
+                    sNode["hopsAway"] = node.get("hopsAway", "0")
                     sNode["macaddr"] = node["user"].get("macaddr", "UNKNOWN")
                     reducedNodes.append(sNode)
                 print("Generating map...")

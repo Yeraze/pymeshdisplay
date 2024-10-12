@@ -67,7 +67,7 @@ def parse_log_file(log_file_path):
 
                     if key in ["latitudeI", "longitudeI"]:
                         value = convert_coordinates(int(value))
-                    elif key in ["num", "altitude", "snr", "uptime"]:
+                    elif key in ["num", "altitude", "snr", "uptime", "hopsAway"]:
                         value = float(value)
                     elif key == "lastHeard":
                         current_node["lastHeard_raw"] = int(value)
@@ -111,7 +111,7 @@ def generate_html(nodes, output_path):
             age = datetime.now() - datetime.fromtimestamp(node["lastHeard_raw"])
             if age.days > 1:
                 color = "gray"
-            elif age.seconds > 3600:
+            elif age.days < 0:
                 color = "orange"
             else:
                 color = "lightgreen"
@@ -151,8 +151,6 @@ def generate_html(nodes, output_path):
             age = datetime.now() - datetime.fromtimestamp(node["lastHeard_raw"])
             if age.days > 0:
                 continue
-            if age.seconds > 3600:
-                continue
             last_heard_formatted = node["lastHeard"]
             table_rows += f"""
             <tr>
@@ -160,7 +158,7 @@ def generate_html(nodes, output_path):
                 <td>{node.get('shortName', 'Unknown')}</td>
                 <td>{node.get('snr', 'N/A')}</td>
                 <td>{last_heard_formatted}</td>
-                <td>{node.get('hops', 'N/A')}</td>
+                <td>{node.get('hopsAway', 'N/A')}</td>
             </tr>"""
 
     stamp = datetime.now().strftime("%c")
