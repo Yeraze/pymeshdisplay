@@ -1,6 +1,8 @@
 from datetime import datetime
 import folium
 import html
+from folium.plugins import MarkerCluster # for clustering the markers
+
 
 
 def replace_unicode(s):
@@ -98,6 +100,7 @@ def generate_html(nodes, output_path):
         map_center = (0, 0)
 
     m = folium.Map(location=map_center, zoom_start=12)
+    marker_cluster = MarkerCluster().add_to(m) # create marker clusters
 
     m.add_css_link("randall_css", "reh.css")
 
@@ -139,7 +142,8 @@ def generate_html(nodes, output_path):
             popup=popup_content,
             icon=folium.Icon(color=color, icon=icon),
             tooltip=f"[{node.get('shortName', 'Unknown')}] {node.get('longName', 'Unknown')}",
-        ).add_to(m)
+        ).add_to(marker_cluster)
+
 
     # Save the map as HTML
     map_html = m._repr_html_()
