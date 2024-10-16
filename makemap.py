@@ -2,6 +2,8 @@ from datetime import datetime
 import folium
 import html
 from folium.plugins import MarkerCluster # for clustering the markers
+from folium.features import DivIcon
+
 
 
 
@@ -137,10 +139,16 @@ def generate_html(nodes, output_path):
             f"<span class='nobr'>Uptime: {format_uptime(node.get('uptime', 0))}</span>"
         )
 
+        folium.Circle([node["latitudeI"], node["longitudeI"]], 1500, fill=True).add_child(folium.Popup(popup_content)).add_to(m)
+
         folium.Marker(
             location=(node["latitudeI"], node["longitudeI"]),
             popup=popup_content,
-            icon=folium.Icon(color=color, icon=icon),
+            icon=DivIcon(
+                icon_size=(150,36),
+                icon_anchor=(0,0),
+                html='<div style="font-size: 24pt">%s</div>' % node.get('shortName'),
+                ),
             tooltip=f"[{node.get('shortName', 'Unknown')}] {node.get('longName', 'Unknown')}",
         ).add_to(marker_cluster)
 
